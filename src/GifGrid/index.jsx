@@ -14,11 +14,10 @@ import {
 } from "./styles";
 
 const GifGrid = () => {
-  const { gifs, loadGifs, isLoading } = useGiphy();
-
+  const { gifs, loadGifs, isLoading, toggleLock, lockedGifs } = useGiphy();
   useEffect(() => {
     loadGifs();
-  }, [loadGifs]);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -36,13 +35,13 @@ const GifGrid = () => {
     <Container>
       <Title>Giphy</Title>
       <Grid>
-        {gifs.map((gif) => (
-          <GifCard key={gif.id}>
+        {gifs.map((gif, index) => (
+          <GifCard key={gif.id} onClick={() => toggleLock(index, gif)}>
             <GifImage
               src={gif.images.fixed_width_downsampled.url}
               alt={gif.title}
             />
-            <LockIcon>🔒🔓</LockIcon>
+            <LockIcon>{lockedGifs[index] ? "🔒" : "🔓"}</LockIcon>
             <Footer>
               <span>{gif.import_datetime.split(" ")[0]}</span>
               <Hashtags>#leisure #ba</Hashtags>
