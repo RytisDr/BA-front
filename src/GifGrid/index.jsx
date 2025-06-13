@@ -31,6 +31,18 @@ const GifGrid = () => {
     loadGifs();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === "Space") {
+        e.preventDefault(); // no scroll
+        loadGifs();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [loadGifs]);
+
   return (
     <Container>
       <Title>Giphy</Title>
@@ -41,7 +53,7 @@ const GifGrid = () => {
               src={gif.images.fixed_width_downsampled.url}
               alt={gif.title}
             />
-            <LockIcon>🔒</LockIcon>
+            <LockIcon>🔒🔓</LockIcon>
             <Footer>
               <span>{gif.import_datetime.split(" ")[0]}</span>
               <Hashtags>#leisure #ba</Hashtags>
