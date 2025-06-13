@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { fetchTrendingGifs } from "../api/giphy";
+import React, { useEffect } from "react";
+import { useGiphy } from "../context/GiphyContext";
 
 import {
   Container,
@@ -14,27 +14,16 @@ import {
 } from "./styles";
 
 const GifGrid = () => {
-  const [gifs, setGifs] = useState([]);
-  const API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
-
-  const loadGifs = async () => {
-    try {
-      const trendingGifs = await fetchTrendingGifs(API_KEY);
-      setGifs(trendingGifs);
-    } catch (error) {
-      console.error("Failed to load GIFs:", error);
-      setGifs([]);
-    }
-  };
+  const { gifs, loadGifs, isLoading } = useGiphy();
 
   useEffect(() => {
     loadGifs();
-  }, []);
+  }, [loadGifs]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.code === "Space") {
-        e.preventDefault(); // no scroll
+        e.preventDefault();
         loadGifs();
       }
     };
@@ -61,8 +50,8 @@ const GifGrid = () => {
           </GifCard>
         ))}
       </Grid>
-      <RefreshButton onClick={loadGifs}>
-        ↻ Hit here to refresh gifs or press space
+      <RefreshButton onClick={loadGifs} disabled={isLoading}>
+        {isLoading ? "Loading..." : "↻ Hit here to refresh gifs or press space"}
       </RefreshButton>
     </Container>
   );
